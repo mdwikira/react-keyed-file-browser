@@ -859,6 +859,7 @@ class FileBrowser extends Component {
     return (
       <DndProvider backend={HTML5Backend}>
         <RawFileBrowser {...this.props} />
+        <h1>Local version</h1>
       </DndProvider>
     )
   }

@@ -353,7 +353,6 @@ class RawFileBrowser extends React.Component {
         newSelection = [...this.state.selection, key]
       }
     }
-
     this.setState(prevState => ({
       selection: newSelection,
       actionTargets: shouldClearState ? [] : actionTargets,
@@ -616,6 +615,7 @@ class RawFileBrowser extends React.Component {
             {...thisItemProps}
             browserProps={browserProps}
             {...fileRendererProps}
+            onDownloadFile={this.props.onDownloadFile}
           />
         )
       } else {

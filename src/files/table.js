@@ -4,6 +4,7 @@ import { DragSource, DropTarget } from 'react-dnd'
 import { NativeTypes } from 'react-dnd-html5-backend'
 import { formatDistanceToNow } from 'date-fns'
 import flow from 'lodash/flow'
+import { DefaultAction } from '../actions/index.js'
 
 import BaseFile, { BaseFileConnectors } from './../base-file.js'
 import { fileSize } from './utils.js'
@@ -182,6 +183,20 @@ class RawExtendedTableFile extends RawTableFile {
         <td className="size">{this.props.fileName}</td>
         <td className="size">{fileSize(size)}</td>
         <td className="size">{this.props.fileKey}</td>
+        <td>
+            <a
+              onClick={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                this.props.onDownloadFile([this.props.fileKey])
+              }}
+              href="#"
+              role="button"
+            >
+              {browserProps.icons.Download}
+              &nbsp;Download
+            </a>
+        </td>
       </tr>
     )
 

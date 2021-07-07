@@ -101,5 +101,98 @@ const TableFile = flow(
   DropTarget(['file', 'folder', NativeTypes.FILE], BaseFileConnectors.targetSource, BaseFileConnectors.targetCollect)
 )(RawTableFile)
 
+class RawExtendedTableFile extends RawTableFile {
+  render() {
+    const {
+      isDragging, isDeleting, isRenaming, isOver, isSelected,
+      action, url, browserProps, connectDragPreview,
+      depth, size, modified,
+    } = this.props
+
+    const icon = browserProps.icons[this.getFileType()] || browserProps.icons.File
+    const inAction = (isDragging || action)
+
+    const ConfirmDeletionRenderer = browserProps.confirmDeletionRenderer
+
+    let name
+    if (!inAction && isDeleting && browserProps.selection.length === 1) {
+      name = (
+        <ConfirmDeletionRenderer
+          handleDeleteSubmit={this.handleDeleteSubmit}
+          handleFileClick={this.handleFileClick}
+          url={url}
+        >
+          {icon}
+          {this.getName()}
+        </ConfirmDeletionRenderer>
+      )
+    } else if (!inAction && isRenaming) {
+      name = (
+        <form className="renaming" onSubmit={this.handleRenameSubmit}>
+          {icon}
+          <input
+            ref={this.selectFileNameFromRef}
+            type="text"
+            value={this.state.newName}
+            onChange={this.handleNewNameChange}
+            onBlur={this.handleCancelEdit}
+            autoFocus
+          />
+        </form>
+      )
+    } else {
+      name = (
+        <a
+          href={url || '#'}
+          download="download"
+          onClick={this.handleFileClick}
+        >
+          {icon}
+          {this.getName()}
+        </a>
+      )
+    }
+
+    let draggable = (
+      <div>
+        {name}
+      </div>
+    )
+    if (typeof browserProps.moveFile === 'function') {
+      draggable = connectDragPreview(draggable)
+    }
+
+    const row = (
+      <tr
+        className={ClassNames('file', {
+          pending: action,
+          dragging: isDragging,
+          dragover: isOver,
+          selected: isSelected,
+        })}
+        onClick={this.handleItemClick}
+        onDoubleClick={this.handleItemDoubleClick}
+      >
+        <td>{this.props.name}</td>
+        <td className="name">
+          <div style={{ paddingLeft: (depth * 16) + 'px' }}>
+            {draggable}
+          </div>
+        </td>
+        <td className="size">{this.props.fileName}</td>
+        <td className="size">{fileSize(size)}</td>
+        <td className="size">{this.props.fileKey}</td>
+      </tr>
+    )
+
+    return this.connectDND(row)
+  }
+}
+
+const ExtendedTableFile = flow(
+  DragSource('file', BaseFileConnectors.dragSource, BaseFileConnectors.dragCollect), 
+  DropTarget(['file', 'folder', NativeTypes.FILE], BaseFileConnectors.targetSource, BaseFileConnectors.targetCollect)
+)(RawExtendedTableFile)
+
 export default TableFile
-export { RawTableFile }
+export { RawTableFile, ExtendedTableFile }

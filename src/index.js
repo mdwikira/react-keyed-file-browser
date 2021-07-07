@@ -6,6 +6,7 @@ import * as Headers from './headers'
 import * as FileRenderers from './files'
 import * as FolderRenderers from './folders'
 import { ExtendedTableHeader } from './headers/table'
+import { ExtendedTableFile } from './files/table'
 import * as Details from './details'
 import * as Filters from './filters'
 import * as Groupers from './groupers'
@@ -33,4 +34,5 @@ export {
   Icons,
   Utils,
   ExtendedTableHeader,
+  ExtendedTableFile,
 }

@@ -59,5 +59,40 @@ const TableHeader = DropTarget(
   BaseFileConnectors.targetCollect
 )(RawTableHeader)
 
+class RawExtendedTableHeader extends RawTableHeader {
+  render() {
+    const header = (
+      <tr
+        className={ClassNames('folder', {
+          dragover: this.props.isOver,
+          selected: this.props.isSelected,
+        })}
+      >
+        <th>Name</th>
+        <th className="size">Filename</th>
+        <th className="modified">Size</th>
+        <th className="modified">Location</th>
+        <th className="modified">Actions</th>
+      </tr>
+    )
+
+    if (
+      typeof this.props.browserProps.createFiles === 'function' ||
+      typeof this.props.browserProps.moveFile === 'function' ||
+      typeof this.props.browserProps.moveFolder === 'function'
+    ) {
+      return this.props.connectDropTarget(header)
+    } else {
+      return header
+    }
+  }
+}
+
+const ExtendedTableHeader = DropTarget(
+  ['file', 'folder', NativeTypes.FILE], 
+  BaseFileConnectors.targetSource, 
+  BaseFileConnectors.targetCollect
+)(RawExtendedTableHeader)
+
 export default TableHeader
-export { RawTableHeader }
+export { RawTableHeader, ExtendedTableHeader }

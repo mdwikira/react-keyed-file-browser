@@ -825,9 +825,84 @@ class RawFileBrowser extends React.Component {
     )
   }
 
+  renderSeparate(contents, header, headerProps) {
+    let renderedFiles
+    if (!contents.length) {
+      if (this.state.nameFilter) {
+        contents = (
+              <tr>
+                <td colSpan={100}>
+                  No files matching "{this.state.nameFilter}".
+                </td>
+              </tr>
+        )
+      } else {
+        contents = (
+              <tr>
+                <td colSpan={100}>
+                  {this.props.noFilesMessage}
+                </td>
+              </tr>
+        )
+      }
+    } else {
+      if (this.state.nameFilter) {
+        const numFiles = contents.length
+        contents = contents.slice(0, this.state.searchResultsShown)
+        if (numFiles > contents.length) {
+          contents.push(
+                <tr key="show-more">
+                  <td colSpan={100}>
+                    <a
+                      onClick={this.handleShowMoreClick}
+                      href="#"
+                    >
+                      Show more results
+                    </a>
+                  </td>
+                </tr>
+          )
+        }
+      }
+    }
+
+    if (this.props.headerRenderer) {
+      header = (
+            <thead>
+              <this.props.headerRenderer
+                {...headerProps}
+                {...this.props.headerRendererProps}
+              />
+            </thead>
+      )
+    }
+
+    let folders = contents.filter(x => {return (x.type === this.props.folderRenderer)})
+    let files = contents.filter(x => {return (x.type === this.props.fileRenderer)})
+
+    renderedFiles = (
+          <div>
+            <table cellSpacing="0" cellPadding="0">
+              <tbody>
+                {folders}
+              </tbody>
+            </table>
+            <table cellSpacing="0" cellPadding="0">
+              {header}
+              <tbody>
+                {files}
+              </tbody>
+            </table>
+          </div>
+    )
+
+    return renderedFiles
+  }
+
   renderContent = {
     table: (contents, header, headerProps) => {return this.renderTable(contents, header, headerProps)},
     list: (contents, header, headerProps) => {return this.renderList(contents, header, headerProps)},
+    separate: (contents, header, headerProps) => {return this.renderSeparate(contents, header, headerProps)},
   }
 
   render() {

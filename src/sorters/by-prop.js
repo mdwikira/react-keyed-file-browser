@@ -19,24 +19,24 @@ export default function propSort(allFiles, propName, order) {
   }
 
   files = files.sort((a, b) => {
-    if (order === 'asc') {
+    if (order === 'desc') {
       if (a[propName] > b[propName]) return 1
       if (a[propName] < b[propName]) return -1
       return 0
     }
-    if (order === 'desc') {
+    if (order === 'asc') {
       if (a[propName] > b[propName]) return -1
       if (a[propName] < b[propName]) return 1
       return 0
     }
   })
   folders = folders.sort((a, b) => {
-    if (order === 'asc') {
+    if (order === 'desc') {
       if (a[propName] > b[propName]) return 1
       if (a[propName] < b[propName]) return -1
       return 0
     }
-    if (order === 'desc') {
+    if (order === 'asc') {
       if (a[propName] > b[propName]) return -1
       if (a[propName] < b[propName]) return 1
       return 0

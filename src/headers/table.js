@@ -66,32 +66,45 @@ const TableHeader = DropTarget(
 
 class RawExtendedTableHeader extends RawTableHeader {
   state = {
-    nameSortOrder: 'asc',
+    nameSortOrder: null,
     filenameSortOrder: null,
     sizeSortOrder: null,
     locationSortOrder: null,
     modifiedSortOrder: null,
   }
 
-  changeOrder(propName) {
+  getNewOrderState(propName) {
     const statePropName = propName + 'SortOrder'
-    const newState = {}
-
-    if (this.state[statePropName] === 'asc') {
-      newState[statePropName] = 'desc'
-      this.setState(newState)
-    } else {
-      newState[statePropName] = 'asc'
-      this.setState(newState)
+    const newState = {
+      nameSortOrder: null,
+      filenameSortOrder: null,
+      sizeSortOrder: null,
+      modifiedSortOrder: null,
+      locationSortOrder: null,
     }
+    if (this.state[statePropName] === 'desc') {
+      newState[statePropName] = 'asc'
+    } else {
+      newState[statePropName] = 'desc'
+    }
+
+    return newState
   }
 
   getOrderIcon(orderPropName) {
     if (this.state[orderPropName] === 'desc') {
       return this.props.browserProps.icons.DescOrder
-    } else {
+    } else if (this.state[orderPropName] === 'asc') {
       return this.props.browserProps.icons.AscOrder
+    } else {
+      return null
     }
+  }
+
+  handleHeaderClick(headerName) {
+    const newState = this.getNewOrderState(headerName)
+    this.props.handleChangeSort(headerName, newState[headerName + 'SortOrder'])
+    this.setState(newState)
   }
 
   render() {
@@ -104,8 +117,7 @@ class RawExtendedTableHeader extends RawTableHeader {
       >
         <th className="name">
           <span onClick={(event) => {
-            this.changeOrder('name')
-            this.props.handleChangeSort('name', this.state.nameSortOrder)
+            this.handleHeaderClick('name')
           }}>
             Name
           <span>{this.getOrderIcon('nameSortOrder')}</span>
@@ -113,8 +125,7 @@ class RawExtendedTableHeader extends RawTableHeader {
         </th>
         <th className="filename">
           <span onClick={(event) => {
-            this.changeOrder('filename')
-            this.props.handleChangeSort('filename', this.state.filenameSortOrder)
+            this.handleHeaderClick('filename')
           }}>
             Filename
             <span>{this.getOrderIcon('filenameSortOrder')}</span>
@@ -122,8 +133,7 @@ class RawExtendedTableHeader extends RawTableHeader {
         </th>
         <th className="size">
           <span onClick={(event) => {
-            this.changeOrder('size')
-            this.props.handleChangeSort('size', this.state.sizeSortOrder)
+            this.handleHeaderClick('size')
           }}>
             Size
             <span>{this.getOrderIcon('sizeSortOrder')}</span>
@@ -131,8 +141,7 @@ class RawExtendedTableHeader extends RawTableHeader {
         </th>
         <th className="location">
           <span onClick={(event) => {
-            this.changeOrder('location')
-            this.props.handleChangeSort('location', this.state.locationSortOrder)
+            this.handleHeaderClick('location')
           }}>
             Location
             <span>{this.getOrderIcon('locationSortOrder')}</span>
@@ -140,8 +149,7 @@ class RawExtendedTableHeader extends RawTableHeader {
         </th>
         <th className="modified">
           <span onClick={(event) => {
-            this.changeOrder('modified')
-            this.props.handleChangeSort('modified', this.state.modifiedSortOrder)
+            this.handleHeaderClick('modified')
           }}>
             Modified
             <span>{this.getOrderIcon('modifiedSortOrder')}</span>

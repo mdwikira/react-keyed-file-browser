@@ -62,6 +62,8 @@ class RawFileBrowser extends React.Component {
       Rename: PropTypes.element,
       Loading: PropTypes.element,
       Download: PropTypes.element,
+      AscOrder: PropTypes.element,
+      DescOrder: PropTypes.element,
     }),
 
     nestChildren: PropTypes.bool.isRequired,

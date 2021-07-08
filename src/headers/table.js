@@ -20,6 +20,11 @@ class RawTableHeader extends React.Component {
       createFiles: PropTypes.func,
       moveFolder: PropTypes.func,
       moveFile: PropTypes.func,
+      icons: PropTypes.shape({
+        AscOrder: PropTypes.element,
+        DescOrder: PropTypes.element,
+      }),
+  
     }),
   }
 
@@ -81,6 +86,14 @@ class RawExtendedTableHeader extends RawTableHeader {
     }
   }
 
+  getOrderIcon(orderPropName) {
+    if (this.state[orderPropName] === 'desc') {
+      return this.props.browserProps.icons.DescOrder
+    } else {
+      return this.props.browserProps.icons.AscOrder
+    }
+  }
+
   render() {
     const header = (
       <tr
@@ -95,6 +108,7 @@ class RawExtendedTableHeader extends RawTableHeader {
             this.props.handleChangeSort('name', this.state.nameSortOrder)
           }}>
             Name
+          <span>{this.getOrderIcon('nameSortOrder')}</span>
           </span>
         </th>
         <th className="filename">
@@ -103,6 +117,7 @@ class RawExtendedTableHeader extends RawTableHeader {
             this.props.handleChangeSort('filename', this.state.filenameSortOrder)
           }}>
             Filename
+            <span>{this.getOrderIcon('filenameSortOrder')}</span>
           </span>
         </th>
         <th className="size">
@@ -111,6 +126,7 @@ class RawExtendedTableHeader extends RawTableHeader {
             this.props.handleChangeSort('size', this.state.sizeSortOrder)
           }}>
             Size
+            <span>{this.getOrderIcon('sizeSortOrder')}</span>
           </span>
         </th>
         <th className="location">
@@ -119,6 +135,7 @@ class RawExtendedTableHeader extends RawTableHeader {
             this.props.handleChangeSort('location', this.state.locationSortOrder)
           }}>
             Location
+            <span>{this.getOrderIcon('locationSortOrder')}</span>
           </span>
         </th>
         <th className="modified">
@@ -127,6 +144,7 @@ class RawExtendedTableHeader extends RawTableHeader {
             this.props.handleChangeSort('modified', this.state.modifiedSortOrder)
           }}>
             Modified
+            <span>{this.getOrderIcon('modifiedSortOrder')}</span>
           </span>
         </th>
         <th className="actions">Actions</th>

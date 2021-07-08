@@ -108,6 +108,7 @@ class RawFileBrowser extends React.Component {
 
     onFolderOpen: PropTypes.func,
     onFolderClose: PropTypes.func,
+    foldersHeader: PropTypes.string,
   }
 
   static defaultProps = {
@@ -712,6 +713,123 @@ class RawFileBrowser extends React.Component {
     })
   }
 
+  renderTable(contents, header, headerProps) {
+    let renderedFiles
+    if (!contents.length) {
+      if (this.state.nameFilter) {
+        contents = (
+              <tr>
+                <td colSpan={100}>
+                  No files matching "{this.state.nameFilter}".
+                </td>
+              </tr>
+        )
+      } else {
+        contents = (
+              <tr>
+                <td colSpan={100}>
+                  {this.props.noFilesMessage}
+                </td>
+              </tr>
+        )
+      }
+    } else {
+      if (this.state.nameFilter) {
+        const numFiles = contents.length
+        contents = contents.slice(0, this.state.searchResultsShown)
+        if (numFiles > contents.length) {
+          contents.push(
+                <tr key="show-more">
+                  <td colSpan={100}>
+                    <a
+                      onClick={this.handleShowMoreClick}
+                      href="#"
+                    >
+                      Show more results
+                    </a>
+                  </td>
+                </tr>
+          )
+        }
+      }
+    }
+
+    if (this.props.headerRenderer) {
+      header = (
+            <thead>
+              <this.props.headerRenderer
+                {...headerProps}
+                {...this.props.headerRendererProps}
+              />
+            </thead>
+      )
+    }
+
+    renderedFiles = (
+          <table cellSpacing="0" cellPadding="0">
+            {header}
+            <tbody>
+              {contents}
+            </tbody>
+          </table>
+    )
+
+    return renderedFiles
+  }
+
+  renderList(contents, header, headerProps) {
+    if (!contents.length) {
+      if (this.state.nameFilter) {
+        contents = (<p className="empty">No files matching "{this.state.nameFilter}"</p>)
+      } else {
+        contents = (<p className="empty">No files.</p>)
+      }
+    } else {
+      let more
+      if (this.state.nameFilter) {
+        const numFiles = contents.length
+        contents = contents.slice(0, this.state.searchResultsShown)
+        if (numFiles > contents.length) {
+          more = (
+            <a
+              onClick={this.handleShowMoreClick}
+              href="#"
+            >
+              Show more results
+            </a>
+          )
+        }
+      }
+      contents = (
+        <div>
+          <ul>{contents}</ul>
+          {more}
+        </div>
+      )
+    }
+
+    if (this.props.headerRenderer) {
+      header = (
+        <this.props.headerRenderer
+          {...headerProps}
+          {...this.props.headerRendererProps}
+        />
+      )
+    }
+
+    return (
+      <div>
+        {header}
+        {contents}
+      </div>
+    )
+  }
+
+  renderContent = {
+    table: (contents, header, headerProps) => {return this.renderTable(contents, header, headerProps)},
+    list: (contents, header, headerProps) => {return this.renderList(contents, header, headerProps)},
+  }
+
   render() {
     const browserProps = this.getBrowserProps()
     const headerProps = {
@@ -726,118 +844,8 @@ class RawFileBrowser extends React.Component {
     const selectedItems = this.getSelectedItems(files)
 
     let header
-    /** @type any */
-    let contents = this.renderFiles(files, 0)
-    switch (this.props.renderStyle) {
-      case 'table':
-        if (!contents.length) {
-          if (this.state.nameFilter) {
-            contents = (
-              <tr>
-                <td colSpan={100}>
-                  No files matching "{this.state.nameFilter}".
-                </td>
-              </tr>
-            )
-          } else {
-            contents = (
-              <tr>
-                <td colSpan={100}>
-                  {this.props.noFilesMessage}
-                </td>
-              </tr>
-            )
-          }
-        } else {
-          if (this.state.nameFilter) {
-            const numFiles = contents.length
-            contents = contents.slice(0, this.state.searchResultsShown)
-            if (numFiles > contents.length) {
-              contents.push(
-                <tr key="show-more">
-                  <td colSpan={100}>
-                    <a
-                      onClick={this.handleShowMoreClick}
-                      href="#"
-                    >
-                      Show more results
-                    </a>
-                  </td>
-                </tr>
-              )
-            }
-          }
-        }
-
-        if (this.props.headerRenderer) {
-          header = (
-            <thead>
-              <this.props.headerRenderer
-                {...headerProps}
-                {...this.props.headerRendererProps}
-              />
-            </thead>
-          )
-        }
-
-        renderedFiles = (
-          <table cellSpacing="0" cellPadding="0">
-            {header}
-            <tbody>
-              {contents}
-            </tbody>
-          </table>
-        )
-        break
-
-      case 'list':
-        if (!contents.length) {
-          if (this.state.nameFilter) {
-            contents = (<p className="empty">No files matching "{this.state.nameFilter}"</p>)
-          } else {
-            contents = (<p className="empty">No files.</p>)
-          }
-        } else {
-          let more
-          if (this.state.nameFilter) {
-            const numFiles = contents.length
-            contents = contents.slice(0, this.state.searchResultsShown)
-            if (numFiles > contents.length) {
-              more = (
-                <a
-                  onClick={this.handleShowMoreClick}
-                  href="#"
-                >
-                  Show more results
-                </a>
-              )
-            }
-          }
-          contents = (
-            <div>
-              <ul>{contents}</ul>
-              {more}
-            </div>
-          )
-        }
-
-        if (this.props.headerRenderer) {
-          header = (
-            <this.props.headerRenderer
-              {...headerProps}
-              {...this.props.headerRendererProps}
-            />
-          )
-        }
-
-        renderedFiles = (
-          <div>
-            {header}
-            {contents}
-          </div>
-        )
-        break
-    }
+    const contents = this.renderFiles(files, 0)
+    renderedFiles = this.renderContent[this.props.renderStyle](contents, header, headerProps)
 
     const ConfirmMultipleDeletionRenderer = this.props.confirmMultipleDeletionRenderer
 

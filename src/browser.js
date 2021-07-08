@@ -16,7 +16,7 @@ import { DefaultConfirmDeletion, MultipleConfirmDeletion } from './confirmations
 
 // default processors
 import { GroupByFolder } from './groupers'
-import { SortByName } from './sorters'
+import { SortByProp } from './sorters'
 
 import { isFolder } from './utils'
 import { DefaultAction } from './actions'
@@ -115,7 +115,7 @@ class RawFileBrowser extends React.Component {
     noFilesMessage: 'No files.',
 
     group: GroupByFolder,
-    sort: SortByName,
+    sort: SortByProp,
 
     nestChildren: false,
     renderStyle: 'table',
@@ -161,6 +161,8 @@ class RawFileBrowser extends React.Component {
     previewFile: null,
 
     addFolder: null,
+    sortByProp: null,
+    sortOrder: 'asc',
   }
 
   componentDidMount() {
@@ -681,7 +683,7 @@ class RawFileBrowser extends React.Component {
       files = newFiles
     }
     if (typeof this.props.sort === 'function') {
-      files = this.props.sort(files)
+      files = this.props.sort(files, this.state.sortByProp, this.state.sortOrder)
     }
     return files
   }
@@ -701,12 +703,20 @@ class RawFileBrowser extends React.Component {
     return selectedItems
   }
 
+  changeSort = (sortByProp, sortOrder) => {
+    this.setState({
+      sortByProp: sortByProp,
+      sortOrder: sortOrder,
+    })
+  }
+
   render() {
     const browserProps = this.getBrowserProps()
     const headerProps = {
       browserProps,
       fileKey: '',
       fileCount: this.props.files.length,
+      handleChangeSort: this.changeSort,
     }
     let renderedFiles
 
@@ -859,7 +869,6 @@ class FileBrowser extends Component {
     return (
       <DndProvider backend={HTML5Backend}>
         <RawFileBrowser {...this.props} />
-        <h1>Local version</h1>
       </DndProvider>
     )
   }

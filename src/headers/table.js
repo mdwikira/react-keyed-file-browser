@@ -60,6 +60,27 @@ const TableHeader = DropTarget(
 )(RawTableHeader)
 
 class RawExtendedTableHeader extends RawTableHeader {
+  state = {
+    nameSortOrder: 'asc',
+    filenameSortOrder: null,
+    sizeSortOrder: null,
+    locationSortOrder: null,
+    modifiedSortOrder: null,
+  }
+
+  changeOrder(propName) {
+    const statePropName = propName + 'SortOrder'
+    const newState = {}
+
+    if (this.state[statePropName] === 'asc') {
+      newState[statePropName] = 'desc'
+      this.setState(newState)
+    } else {
+      newState[statePropName] = 'asc'
+      this.setState(newState)
+    }
+  }
+
   render() {
     const header = (
       <tr
@@ -68,11 +89,47 @@ class RawExtendedTableHeader extends RawTableHeader {
           selected: this.props.isSelected,
         })}
       >
-        <th>Name</th>
-        <th className="size">Filename</th>
-        <th className="modified">Size</th>
-        <th className="modified">Location</th>
-        <th className="modified">Actions</th>
+        <th className="name">
+          <span onClick={(event) => {
+            this.changeOrder('name')
+            this.props.handleChangeSort('name', this.state.nameSortOrder)
+          }}>
+            Name
+          </span>
+        </th>
+        <th className="filename">
+          <span onClick={(event) => {
+            this.changeOrder('filename')
+            this.props.handleChangeSort('filename', this.state.filenameSortOrder)
+          }}>
+            Filename
+          </span>
+        </th>
+        <th className="size">
+          <span onClick={(event) => {
+            this.changeOrder('size')
+            this.props.handleChangeSort('size', this.state.sizeSortOrder)
+          }}>
+            Size
+          </span>
+        </th>
+        <th className="location">
+          <span onClick={(event) => {
+            this.changeOrder('location')
+            this.props.handleChangeSort('location', this.state.locationSortOrder)
+          }}>
+            Location
+          </span>
+        </th>
+        <th className="modified">
+          <span onClick={(event) => {
+            this.changeOrder('modified')
+            this.props.handleChangeSort('modified', this.state.modifiedSortOrder)
+          }}>
+            Modified
+          </span>
+        </th>
+        <th className="actions">Actions</th>
       </tr>
     )
 

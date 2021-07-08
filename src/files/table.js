@@ -174,16 +174,16 @@ class RawExtendedTableFile extends RawTableFile {
         onClick={this.handleItemClick}
         onDoubleClick={this.handleItemDoubleClick}
       >
-        <td>{this.props.name}</td>
-        <td className="name">
+        <td className="name">{this.props.name}</td>
+        <td className="filename">
           <div style={{ paddingLeft: (depth * 16) + 'px' }}>
             {draggable}
           </div>
         </td>
-        <td className="size">{this.props.fileName}</td>
         <td className="size">{fileSize(size)}</td>
-        <td className="size">{this.props.fileKey}</td>
-        <td>
+        <td className="location">{this.props.location}</td>
+        <td className="modified">{this.props.modified}</td>
+        <td className="actions">
             <a
               onClick={(event) => {
                 event.preventDefault()

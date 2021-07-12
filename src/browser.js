@@ -878,8 +878,16 @@ class RawFileBrowser extends React.Component {
       )
     }
 
-    let folders = contents.filter(x => {return (x.type === this.props.folderRenderer)})
-    let files = contents.filter(x => {return (x.type === this.props.fileRenderer)})
+    let folders
+    let files
+
+    if (contents.length) {
+      folders = contents.filter(x => { return (x.type === this.props.folderRenderer) })
+      files = contents.filter(x => { return (x.type === this.props.fileRenderer) })
+    } else {
+      folders = null
+      files = contents
+    }
 
     renderedFiles = (
           <div>
@@ -901,9 +909,9 @@ class RawFileBrowser extends React.Component {
   }
 
   renderContent = {
-    table: (contents, header, headerProps) => {return this.renderTable(contents, header, headerProps)},
-    list: (contents, header, headerProps) => {return this.renderList(contents, header, headerProps)},
-    separate: (contents, header, headerProps) => {return this.renderSeparate(contents, header, headerProps)},
+    table: (contents, header, headerProps) => { return this.renderTable(contents, header, headerProps) },
+    list: (contents, header, headerProps) => { return this.renderList(contents, header, headerProps) },
+    separate: (contents, header, headerProps) => { return this.renderSeparate(contents, header, headerProps) },
   }
 
   render() {

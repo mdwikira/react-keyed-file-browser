@@ -85,6 +85,9 @@ class RawTableFolder extends BaseFolder {
         </td>
         <td />
         <td />
+        <td />
+        <td />
+        <td />
       </tr>
     )
 

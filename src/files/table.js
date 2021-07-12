@@ -126,7 +126,7 @@ class RawExtendedTableFile extends RawTableFile {
               role="button"
             >
               {browserProps.icons.Download}
-              &nbsp;Download
+              Download
             </a>
         </td>
       </tr>

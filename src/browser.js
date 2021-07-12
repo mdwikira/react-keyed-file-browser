@@ -70,6 +70,7 @@ class RawFileBrowser extends React.Component {
     renderStyle: PropTypes.oneOf([
       'list',
       'table',
+      'separate',
     ]).isRequired,
 
     startOpen: PropTypes.bool.isRequired, // TODO: remove?
